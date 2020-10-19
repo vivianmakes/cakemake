@@ -1,4 +1,4 @@
-Bimport yaml
+import yaml
 import os
 
 class Credentials():
