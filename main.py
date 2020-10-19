@@ -1,13 +1,15 @@
 import asyncio
 
 from periodic import Periodic
-from botuser import Botuser
+import botuser
+from config import credentials
 
 async def update_loop():
     await asyncio.sleep(6)
-    await Botuser.wait_until_ready()
-    while not Botuser.is_closed():
+    await botuser.botuser.wait_until_ready()
+    while not botuser.botuser.is_closed():
         await asyncio.sleep(30)
         await Periodic.update()
 
-await update_loop()
+botuser.botuser.loop.create_task(update_loop)
+botuser.botuser.run(credentials.bot_token)

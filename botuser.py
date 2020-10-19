@@ -56,6 +56,3 @@ async def cheer(ctx, arg):
       await ctx.send(':no_entry_sign: **NO CAN DO, BOSS** :no_entry_sign:\nPlease enter a contestant number in numeral form.')
   else:
     await ctx.send(':no_entry_sign: **NO CAN DO, BOSS** :no_entry_sign:\nNo contestants are currently baking. You must wait until contestants are baking!')
-
-
-botuser.run(credentials.bot_token)
