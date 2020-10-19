@@ -2,4 +2,3 @@ arrow
 discord
 PyYAML
 pillow
-PIL
