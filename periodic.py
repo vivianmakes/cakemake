@@ -10,12 +10,12 @@ class Periodic:
 
     def schedule_next_event(self):
       self.next_event = arrow.utcnow().shift(minutes=+1)
-        """
-        if arrow.utcnow().hour < 17:
-            self.next_event = arrow.utcnow().replace(hour=22, minute=09)
-        else:
-            self.next_event = arrow.utcnow().replace(hour=22, minute=00).shift(days=+1)
-        """"
+      """
+      if arrow.utcnow().hour < 17:
+          self.next_event = arrow.utcnow().replace(hour=22, minute=09)
+      else:
+          self.next_event = arrow.utcnow().replace(hour=22, minute=00).shift(days=+1)
+      """
 
     async def update(self):
         if self.next_event <= arrow.utcnow():
