@@ -45,7 +45,7 @@ async def cheer(ctx, arg):
     if arg == '1' or arg == '2':
       if arg == '1':
         res = await cakeshow.cheer(1, ctx.author)
-      elif arg == '2'
+      elif arg == '2':
         res = await cakeshow.cheer(2, ctx.author)
       
       if res:
