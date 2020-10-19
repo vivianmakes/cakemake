@@ -44,7 +44,7 @@ class Player:
           self.cheer += 1
           self.cheered_by.append(user_object.id)
           return True
-        else
+        else:
           return False
 
     def get_roll(self):
