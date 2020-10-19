@@ -44,4 +44,4 @@ async def cheer(ctx, arg):
     await cakeshow.test_show()
 
 
-await botuser.run(credentials.bot_token)
+botuser.run(credentials.bot_token)
