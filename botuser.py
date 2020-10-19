@@ -6,19 +6,20 @@ import imaging
 import roster
 from io import BytesIO
 import cakeshow
+from config import credentials
 
 class Botuser(commands.Bot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.broadcast_channel = None # sure would be cool to set this via environment variable
+        self.broadcast_channel = None
 
     async def on_ready(self):
         print('Logged in as:')
         print(self.user.name)
         print(self.user.id)
         print('--------------')
-        self.broadcast_channel = self.get_channel(767265737739075605)  # sure would be cool to set this via environment variable
+        self.broadcast_channel = self.get_channel(credentials.broadcast_channel)
 
     async def broadcast(self, message):
         await self.broadcast_channel.send(message)
@@ -40,4 +41,4 @@ async def cheer(ctx, arg):
     await cakeshow.test_show()
 
 
-botuser.run('NzY3NzkwMjg4NDE2MDE0NDE5.X43CbQ.nvByWv0o1Alug1bAIYw4SD8c2YI')
+botuser.run(credentials.bot_token)

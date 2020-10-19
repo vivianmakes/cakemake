@@ -15,6 +15,8 @@ class Player:
         self.icon = 'professor.png'
         self.pronoun = 'they'
         self.cheer = 0
+        self.wins = 0
+        self.losses = 0
 
         self.keywords = None
 
@@ -30,6 +32,7 @@ class Player:
         self.fame = output.get('fame', 0)
         self.icon = output.get('icon', 'professor.png')
         self.pronoun = output.get('pronoun', 'they')
+        self.
 
         self.keywords = output.get('keywords', {})
 
