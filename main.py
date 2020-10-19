@@ -9,3 +9,5 @@ async def update_loop():
     while not Botuser.is_closed():
         await asyncio.sleep(30)
         await Periodic.update()
+
+update_loop()
