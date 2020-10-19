@@ -10,4 +10,4 @@ async def update_loop():
         await asyncio.sleep(30)
         await Periodic.update()
 
-update_loop()
+await update_loop()
