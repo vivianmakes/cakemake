@@ -20,6 +20,9 @@ class Botuser(commands.Bot):
         print(self.user.id)
         print('--------------')
         self.broadcast_channel = self.get_channel(credentials.broadcast_channel)
+        print('Channel Target:')
+        print(credentials.broadcast_channel)
+        print('--------------')
 
     async def broadcast(self, message):
         await self.broadcast_channel.send(message)
