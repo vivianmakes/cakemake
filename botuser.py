@@ -41,7 +41,21 @@ async def test(ctx):
 
 @botuser.command(name='cheer')
 async def cheer(ctx, arg):
-    await cakeshow.test_show()
+  if cakeshow.pending_show is not None:
+    if arg == '1' or arg == '2':
+      if arg == '1':
+        res = await cakeshow.cheer(1, ctx.author)
+      elif arg == '2'
+        res = await cakeshow.cheer(2, ctx.author)
+      
+      if res:
+        await ctx.send(':tada: *You successfully cheer on contestant no. '+ arg + '* :tada:')
+      else:
+        await ctx.send(':no_entry_sign: *Your cheers fall on deaf ears...* :no_entry_sign:\n(No more than one cheer per person, sorry)'
+    else:
+      await ctx.send(':no_entry_sign: **NO CAN DO, BOSS** :no_entry_sign:\nPlease enter a contestant number in numeral form.')
+  else:
+    await ctx.send(':no_entry_sign: **NO CAN DO, BOSS** :no_entry_sign:\nNo contestants are currently baking. You must wait until contestants are baking!')
 
 
 botuser.run(credentials.bot_token)

@@ -15,6 +15,7 @@ class Player:
         self.icon = 'professor.png'
         self.pronoun = 'they'
         self.cheer = 0
+        self.cheeredby = []
         self.wins = 0
         self.losses = 0
 
@@ -36,6 +37,15 @@ class Player:
         self.losses = output.get('losses', 0)
 
         self.keywords = output.get('keywords', {})
+
+
+    def add_cheer(user_object):
+        if user_object.id not in self.cheered_by:
+          self.cheer += 1
+          self.cheered_by.append(user_object.id)
+          return True
+        else
+          return False
 
     def get_roll(self):
         roll = random.randint(0, self.talent+self.cheer)
