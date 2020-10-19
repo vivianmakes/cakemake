@@ -51,7 +51,7 @@ async def cheer(ctx, arg):
       if res:
         await ctx.send(':tada: *You successfully cheer on contestant no. '+ arg + '* :tada:')
       else:
-        await ctx.send(':no_entry_sign: *Your cheers fall on deaf ears...* :no_entry_sign:\n(No more than one cheer per person, sorry)'
+        await ctx.send(':no_entry_sign: *Your cheers fall on deaf ears...* :no_entry_sign:\n(No more than one cheer per person, sorry)')
     else:
       await ctx.send(':no_entry_sign: **NO CAN DO, BOSS** :no_entry_sign:\nPlease enter a contestant number in numeral form.')
   else:
