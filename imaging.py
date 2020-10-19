@@ -1,5 +1,7 @@
 from PIL import Image
 import os
+from io import BytesIO
+import discord
 import io
 
 def get_portrait_path(filename):
@@ -20,8 +22,13 @@ def concatenate(filename1, filename2):
     return product
 
 
-def image_to_byte_array(image:Image):
-    imgByteArr = io.BytesIO()
-    image.save(imgByteArr, format='PNG')
-    imgByteArr = imgByteArr.getvalue()
-    return imgByteArr
+def open_image_path(image_path):
+    im = Image.open(image_path)
+    return im
+
+
+def get_image_file(image_object):
+    with BytesIO() as image_binary:
+        image_object.save(image_binary, 'PNG')
+        image_binary.seek(0)
+        return discord.File(fp=image_binary, filename='image.png')

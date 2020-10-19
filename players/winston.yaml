@@ -1,2 +1,9 @@
 name: "Winston Haberdashery"
 icon: "professor.png"
+pronoun: 'he'
+keywords:
+  sounds:
+    - "HEM HEM!"
+    - "HRMMM..."
+    - "HRM HRM HRM!"
+    - "ELEMENTARY, MY DEAR!"
