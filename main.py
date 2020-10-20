@@ -11,5 +11,5 @@ async def update_loop():
         await asyncio.sleep(30)
         await Periodic.update()
 
-botuser.botuser.loop.create_task(update_loop)
+botuser.botuser.loop.create_task(update_loop())
 botuser.botuser.run(credentials.bot_token)
