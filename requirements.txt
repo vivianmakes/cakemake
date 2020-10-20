@@ -2,3 +2,5 @@ arrow
 discord
 PyYAML
 pillow
+python-Levenshtein
+fuzzywuzzy

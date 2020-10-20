@@ -19,14 +19,16 @@ def get_quality_text(quality):
     text = "It's "
     if quality >= 30:
         text += "**LEGENDARY!!** :star::star::star::star::star:"
-    elif quality >= 15:
+    elif quality >= 17:
         text += "**AMAZING!!** :star::star::star::star:"
     elif quality >= 10:
         text += "**REALLY GOOD!!** :star::star::star:"
     elif quality >= 5:
         text += "**Yummy!** :star::star:"
     elif quality >= 3:
-        text += "**Okay!** :star:"
+        text += "okay! :star:"
+    elif quality >= 1:
+        text += "alright."
     else:
         text += "***HORRIBLE!!!*** :weary:"
     return text
@@ -38,13 +40,13 @@ def get_lucky_text():
   random_lucky_text.append('The cake **gleams**!! :sparkles:')
   random_lucky_text.append('The cake **glows**!! :sparkles:')
   random_lucky_text.append('A **choir of angels** sings!! :sparkles:')
-  random_lucky_text.append('A **series of trumpets** herald the arrval of the cake!! :sparkles:')
+  random_lucky_text.append('A **series of trumpets** herald the arrival of the cake!! :sparkles:')
   return random.choice(random_lucky_text)
 
 def get_unlucky_text():
   random_unlucky_text = []
   random_unlucky_text.append('The cake **is badly burned**!!')
-  random_unlucky_text.append('The cake **screeches, bloodcurdlingly**!!')
+  random_unlucky_text.append('The cake **screeches, blood-curdlingly**!!')
   random_unlucky_text.append('The cake **levitates ominously**!!')
   random_unlucky_text.append('The cake **begins to weep blood!**')
   random_unlucky_text.append('The cake **bursts into flames**!!')
@@ -87,7 +89,7 @@ async def run_show():
           desc += ' ' + get_lucky_text()
           p1_quality += 30
 
-        desc += ' ' + get_quality_text(p1_quality)
+        desc += '\n' + get_quality_text(p1_quality)
 
         # PT 2
 
@@ -103,7 +105,7 @@ async def run_show():
           desc += ' ' + get_lucky_text()
           p2_quality += 30
 
-        desc += ' ' + get_quality_text(p2_quality)
+        desc += '\n' + get_quality_text(p2_quality)
 
         # RESULTS
 
@@ -151,11 +153,14 @@ async def prep_show():
         n1 = p1.name
         n2 = p2.name
 
+        d1 = '[' + str(p1.wins) + '-' + str(p1.losses) + ']' + ' - ' + p1.get_vibe_emojis()
+        d2 = '[' + str(p2.wins) + '-' + str(p2.losses) + ']' + ' - ' + p1.get_vibe_emojis()
+
         res = imaging.concatenate(im1, im2)
 
-        new_embed = discord.Embed(title="UP NEXT...", description="The following contestants will bake next. The winner will be announced in 30 minutes.\nUse the `!cheer` command to cheer for the contestant you think will win.", color=0xffd300)
-        new_embed.add_field(name="!Cheer 1", value=n1, inline=True)
-        new_embed.add_field(name="!Cheer 2", value=n2, inline=True)
+        new_embed = discord.Embed(title="UP NEXT...", description="The following contestants will bake next. The winner will be announced soon.\nUse the `!cheer [part of name]` command to cheer for the contestant you think will (or want to) win.", color=0xffd300)
+        new_embed.add_field(name=n1, value=d1, inline=True)
+        new_embed.add_field(name=n2, value=d2, inline=True)
         file = imaging.get_image_file(res)
         new_embed.set_image(url = 'attachment://image.png')
         await broadcast_embed(new_embed, file=file)

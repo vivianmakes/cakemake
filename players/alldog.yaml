@@ -1,0 +1,11 @@
+name: "Alldog Heaven"
+icon: "alldog.png"
+pronoun: 'they'
+keywords:
+  sounds:
+    - "WOOF!"
+    - "BARK!"
+    - "YIP YIP YIP!"
+    - "BARK BARK!"
+  cakes:
+    - "Angel Food Cake"

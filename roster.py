@@ -1,9 +1,10 @@
 import yaml
 import random
-import glob
 import os
 import imaging
 import copy
+import glob
+from fuzzywuzzy import fuzz
 
 class Player:
     def __init__(self):
@@ -19,34 +20,47 @@ class Player:
         self.cheered_by = []
         self.wins = 0
         self.losses = 0
+        self.vibe = 0
+        self.reliability = 0
 
-        self.keywords = None
+        self.keywords = {}
 
     def build_from_yaml(self, in_yaml):
 
-        output = yaml.load(in_yaml, Loader=yaml.BaseLoader)
+        input = yaml.load(in_yaml, Loader=yaml.BaseLoader)
 
-        self.name = output.get('name', "Default")
-        self.talent = output.get('talent', random.randint(4, 8))
-        self.luck = output.get('talent', random.randint(0, 8))
-        self.unluck = output.get('talent', random.randint(0, 8))
-        self.alignment = output.get('alignment', random.randint(-100, 100))
-        self.fame = output.get('fame', 0)
-        self.icon = output.get('icon', 'professor.png')
-        self.pronoun = output.get('pronoun', 'they')
-        self.wins = output.get('wins', 0)
-        self.losses = output.get('losses', 0)
+        self.name = input.get('name', "Default")
+        self.talent = input.get('talent', random.randint(3, 7))
+        self.luck = input.get('talent', random.randint(0, 8))
+        self.unluck = input.get('talent', random.randint(0, 8))
+        self.alignment = input.get('alignment', random.randint(-100, 100))
+        self.fame = input.get('fame', 0)
+        self.icon = input.get('icon', 'professor.png')
+        self.pronoun = input.get('pronoun', 'they')
+        self.wins = input.get('wins', 0)
+        self.losses = input.get('losses', 0)
+        self.vibe = input.get('vibe', random.randrange(-1,1))
+        self.reliability = input.get('reliability', random.randrange(0,2))
 
-        self.keywords = output.get('keywords', {})
+        self.keywords = input.get('keywords', {})
 
     def post_match_results(self, did_win):
         # resets after a match
         self.cheer = 0
         self.cheered_by = []
+        vibe_up_chance = 50
+
         if did_win:
             self.wins += 1
+            vibe_up_chance = 75
         else:
             self.losses += 1
+            vibe_up_chance = 35
+
+        if random.randrange(1, 100) <= vibe_up_chance:
+            self.vibe = ((self.vibe + 1 + 2) % 5) - 2  # Cycles: 0 -> 1 -> 2 -> -2 -> -1 -> 0
+        else:
+            self.vibe = ((self.vibe - 1 + 2) % 5) - 2  # Cycles: 0 -> -1 -> -2 -> 2 -> 1 -> 0
 
     def add_cheer(self, user_object):
         if user_object.id not in self.cheered_by:
@@ -57,8 +71,35 @@ class Player:
           return False
 
     def get_roll(self):
-        roll = random.randint(0, self.talent+self.cheer)
+        roll = random.randint(0, self.talent+self.cheer+self.vibe)
+        roll += self.reliability
         return roll
+
+    def get_vibe_emojis(self):
+        msg = ""
+        if self.vibe > 0:
+            for i in range(0, self.vibe):
+                msg += ":fire:"
+        elif self.vibe < 0:
+            for i in range(0, -self.vibe):
+                msg += ":snowflake:"
+        else:
+            msg += ":white_sun_cloud:"
+        return msg
+
+
+    def get_luck_description(self):
+        msg = "Cryptic"
+        if self.luck >= 6 and self.unluck >= 6:
+            msg = "Chaotic"
+        elif self.luck >= 6 and self.unluck <= 2:
+            msg = "Radiant"
+        elif self.unluck >= 6 and self.luck <= 4:
+            msg = "Ominous"
+        elif self.unluck <= 3 and self.luck <= 3:
+            msg = "Borin!g"
+        return msg
+
 
     def get_lucky(self):
         chance = random.randint(1,100)
@@ -141,6 +182,27 @@ def get_random_pair():
     p2 = random.choice(players_minus_p1)
 
     return [p1, p2]
+
+def search_players(search_string):
+    search_list = []
+    for player in players:
+        search_list.append({'obj':player, 'score':fuzz.partial_ratio(player.name, search_string)})
+
+    result = None
+    high_score = 35 # base ratio it must meet.
+    for elem in search_list:
+        if elem['score'] > high_score:
+            result = elem['obj']
+            high_score = elem['score']
+        elif elem['score'] == high_score:
+            result = None
+            high_score = elem['score']
+            # Copies will null each other out in case of confusion.
+
+    return result
+
+
+
 
 
 # LOAD ROSTER - INITIAL
