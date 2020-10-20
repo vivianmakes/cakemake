@@ -7,6 +7,7 @@ import roster
 from io import BytesIO
 import cakeshow
 from config import credentials
+import copy
 
 class Botuser(commands.Bot):
     def __init__(self, *args, **kwargs):
@@ -65,6 +66,14 @@ async def cheer(ctx, arg):
 async def list_roster(ctx):
     if len(roster.players) > 0:
         msg = "**CURRENT CONTESTANTS:**\n"
-        for player in roster.players:
-            msg += "\n-" + player.name
+
+        sortedroster = roster.players.copy()
+        sortedroster.sort(key=compare_wins, reverse=True)
+
+        for player in sortedroster:
+            msg += "\n[" + player.wins + "-" + player.losses + "] " + player.name
         await ctx.send(msg)
+
+
+def compare_wins(in_player):
+  return in_player.wins - in_player.losses*0.001
