@@ -9,7 +9,7 @@ class Periodic:
         self.schedule_next_event()
 
     def schedule_next_event(self):
-      self.next_event = arrow.utcnow().shift(minutes=+1)
+      self.next_event = arrow.utcnow().shift(minutes=+15)
       """
       if arrow.utcnow().hour < 17:
           self.next_event = arrow.utcnow().replace(hour=22, minute=09)

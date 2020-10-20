@@ -1,0 +1,12 @@
+name: "Doily White"
+icon: "doily.png"
+pronoun: 'she'
+unluck: 10
+luck: 0
+keywords:
+  adjectives:
+    - 'haunted'
+    - 'spooky'
+    - 'ghostly'
+    - 'ethereal'
+    - 'translucent'

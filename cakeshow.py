@@ -12,6 +12,9 @@ class Gameshow():
         self.participant2 = None
         self.cheered_by = []
 
+    def get_participant_list(self):
+        return [self.participant1, self.participant2]
+
 
 pending_show = None
 
@@ -117,14 +120,15 @@ async def run_show():
           else:
             winner = p2
         
-        im_winner = imaging.open_image_path(winner.get_portrait_path())
+        im_winner = winner.get_portrait_path()
+        res = imaging.concatenate_multiple("images/win_l.png", im_winner, "images/win_r.png")
 
         desc += "\n\n*" + winner.name + "* has swayed the judges with " + winner.get_pronoun('their') + " skill! ***VICTORY! :sparkles:***"
 
         new_embed = discord.Embed(title="THE WINNER IS...",
                                   description=desc,
                                   color=0x7aa54c)
-        file = imaging.get_image_file(im_winner)
+        file = imaging.get_image_file(res)
         new_embed.set_image(url='attachment://image.png')
         await broadcast_embed(new_embed, file=file)
 
@@ -148,17 +152,18 @@ async def prep_show():
         pending_show.participant2 = p2
 
         im1 = p1.get_portrait_path()
+        im_vs = "images/vs.png"
         im2 = p2.get_portrait_path()
 
         n1 = p1.name
         n2 = p2.name
 
         d1 = '[' + str(p1.wins) + '-' + str(p1.losses) + ']' + ' - ' + p1.get_vibe_emojis()
-        d2 = '[' + str(p2.wins) + '-' + str(p2.losses) + ']' + ' - ' + p1.get_vibe_emojis()
+        d2 = '[' + str(p2.wins) + '-' + str(p2.losses) + ']' + ' - ' + p2.get_vibe_emojis()
 
-        res = imaging.concatenate(im1, im2)
+        res = imaging.concatenate_multiple(im1, im_vs, im2)
 
-        new_embed = discord.Embed(title="UP NEXT...", description="The following contestants will bake next. The winner will be announced soon.\nUse the `!cheer [part of name]` command to cheer for the contestant you think will (or want to) win.", color=0xffd300)
+        new_embed = discord.Embed(title="UP NEXT...", description="The following contestants will bake next. The winner will be announced soon.\nUse the `!cheer [part of name]` command to cheer for the contestant you think will win. (Or want to win!)", color=0xffd300)
         new_embed.add_field(name=n1, value=d1, inline=True)
         new_embed.add_field(name=n2, value=d2, inline=True)
         file = imaging.get_image_file(res)
@@ -166,15 +171,9 @@ async def prep_show():
         await broadcast_embed(new_embed, file=file)
 
 
-async def cheer(num, user_object):
-  global pending_show
-  res = False
+async def cheer(player_object, user_object):
+    global pending_show
+    res = False
+    res = player_object.add_cheer(user_object)
 
-  if user_object.id not in pending_show.cheered_by:
-    if num == 1:
-      res = pending_show.participant1.add_cheer(user_object)
-    elif num == 2:
-      res = pending_show.participant2.add_cheer(user_object)
-    pending_show.cheered_by.append(user_object.id)
-
-  return res
+    return res

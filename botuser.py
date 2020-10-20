@@ -52,26 +52,38 @@ async def test(ctx):
 
 
 @botuser.command(name = 'cheer')
-async def cheer(ctx, arg):
-    if cakeshow.pending_show is not None:
-        if arg == '1' or arg == '2':
-            res = False
-            if arg == '1':
-                res = await cakeshow.cheer(1, ctx.author)
-            elif arg == '2':
-                res = await cakeshow.cheer(2, ctx.author)
-
-            if res:
-                await ctx.send(':tada: *You successfully cheer on contestant no. ' + arg + '* :tada:')
-            else:
-                await ctx.send(
-                    ':no_entry_sign: *Your cheers fall on deaf ears...* :no_entry_sign:\n(No more than one cheer per person, sorry)')
-        else:
-            await ctx.send(
-                ':no_entry_sign: **NO CAN DO, BOSS** :no_entry_sign:\nPlease enter a contestant number in numeral form.')
+async def cheer(ctx, *args):
+    search_string = " ".join(args[:])
+    result = roster.search_players(search_string)  # returns a player or none
+    if result is None:
+        new_embed = discord.Embed(title="ERROR",
+                                  description="Couldn't figure out who you meant. Try being more specific?",
+                                  color=0x458dd6)
+        await ctx.send(embed=new_embed)
+    elif cakeshow.pending_show is None:
+        new_embed = discord.Embed(title="ERROR",
+                                  description="No contestants are currently lined up. You must wait until they're baking to cheer.",
+                                  color=0x458dd6)
+        await ctx.send(embed=new_embed)
+    elif ctx.author.id in cakeshow.pending_show.cheered_by:
+        new_embed = discord.Embed(title="ERROR",
+                                  description="Only one cheer allowed per show, sorry.",
+                                  color=0x458dd6)
+        await ctx.send(embed=new_embed)
     else:
-        await ctx.send(
-            ':no_entry_sign: **NO CAN DO, BOSS** :no_entry_sign:\nNo contestants are currently baking. You must wait until contestants are baking!')
+        if result not in cakeshow.pending_show.get_participant_list():
+            new_embed = discord.Embed(title="ERROR",
+                                      description="You must cheer a participant in the active show.",
+                                      color=0x458dd6)
+            await ctx.send(embed=new_embed)
+        else:
+            result.add_cheer(ctx.author)
+            cakeshow.pending_show.cheered_by.append(ctx.author.id)
+            new_embed = discord.Embed(title="CHEER RESULT",
+                                      description="You cheer on " + result.name + "!\n",
+                                      color=0x458dd6)
+            await ctx.send(embed=new_embed)
+
 
 
 @botuser.command(name='roster')
@@ -97,7 +109,7 @@ async def list_roster(ctx):
 
 
 def compare_wins(in_player):
-  return in_player.wins - in_player.losses*0.001
+    return in_player.wins - in_player.losses*0.001
 
 
 @botuser.command(name='inspect')
@@ -110,17 +122,19 @@ async def inspect(ctx, *args):
                                   color = 0x458dd6)
         await ctx.send(embed=new_embed)
     else:
-        desc = "*You consume 1 :sparkles: magic to scry.*"
+        desc = ""
         desc += "\n\n**Pronouns:** " + result.get_pronoun('they') + "/" + result.get_pronoun('them')
         desc += "\n**Wins:** " + str(result.wins)
         desc += "\n**Losses:** " + str(result.losses)
         desc += "\n\n**Vibe:** " + result.get_vibe_emojis()
-        desc += "\n**Talent:** " + str(result.talent)
-        desc += "\n**Reliability:** " + str(result.reliability)
+        desc += "\n**Talent:** " + result.get_talent_description()
+        desc += "\n**Reliability:** " + result.get_reliability_description()
         desc += "\n**Horoscope:** " + result.get_luck_description()
 
-
+        im = imaging.open_image_path(result.get_portrait_path())
+        file = imaging.get_image_file(im)
         new_embed = discord.Embed(title = "INSPECTING " + result.name,
                                   description = desc,
                                   color = 0x458dd6)
-        await ctx.send(embed = new_embed)
+        new_embed.set_image(url='attachment://image.png')
+        await ctx.send(embed = new_embed, file=file)

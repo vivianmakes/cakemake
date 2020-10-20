@@ -30,17 +30,17 @@ class Player:
         input = yaml.load(in_yaml, Loader=yaml.BaseLoader)
 
         self.name = input.get('name', "Default")
-        self.talent = input.get('talent', random.randint(3, 7))
-        self.luck = input.get('talent', random.randint(0, 8))
-        self.unluck = input.get('talent', random.randint(0, 8))
-        self.alignment = input.get('alignment', random.randint(-100, 100))
-        self.fame = input.get('fame', 0)
+        self.talent = int(input.get('talent', random.randint(3, 7)))
+        self.luck = int(input.get('luck', random.randint(0, 8)))
+        self.unluck = int(input.get('unluck', random.randint(0, 8)))
+        self.alignment = int(input.get('alignment', random.randint(-100, 100)))
+        self.fame = int(input.get('fame', 0))
         self.icon = input.get('icon', 'professor.png')
         self.pronoun = input.get('pronoun', 'they')
-        self.wins = input.get('wins', 0)
-        self.losses = input.get('losses', 0)
-        self.vibe = input.get('vibe', random.randrange(-1,1))
-        self.reliability = input.get('reliability', random.randrange(0,2))
+        self.wins = int(input.get('wins', 0))
+        self.losses = int(input.get('losses', 0))
+        self.vibe = int(input.get('vibe', random.randrange(-1, 1)))
+        self.reliability = int(input.get('reliability', random.randrange(0, 2)))
 
         self.keywords = input.get('keywords', {})
 
@@ -87,9 +87,8 @@ class Player:
             msg += ":white_sun_cloud:"
         return msg
 
-
     def get_luck_description(self):
-        msg = "Cryptic"
+        msg = "Even"
         if self.luck >= 6 and self.unluck >= 6:
             msg = "Chaotic"
         elif self.luck >= 6 and self.unluck <= 2:
@@ -97,9 +96,38 @@ class Player:
         elif self.unluck >= 6 and self.luck <= 4:
             msg = "Ominous"
         elif self.unluck <= 3 and self.luck <= 3:
-            msg = "Borin!g"
+            msg = "Boring"
         return msg
 
+    def get_talent_description(self):
+        msg = "Cryptic"
+        if self.talent >= 10:
+            msg = "Prodigy"
+        elif self.talent >= 7:
+            msg = "Expert"
+        elif self.talent >= 5:
+            msg = "Proficient"
+        elif self.talent >= 3:
+            msg = "Moderate"
+        elif self.talent <= 1:
+            msg = "Poor"
+        else:
+            msg = "Abysmal"
+        return msg
+
+    def get_reliability_description(self):
+        msg = "Cryptic"
+        if self.reliability >= 6:
+            msg = "Rock solid"
+        elif self.reliability >= 4:
+            msg = "Dependable"
+        elif self.reliability >= 2:
+            msg = "Average"
+        elif self.reliability >= 1:
+            msg = "Flaky"
+        elif self.reliability <= 0:
+            msg = "Anxious"
+        return msg
 
     def get_lucky(self):
         chance = random.randint(1,100)
@@ -140,8 +168,8 @@ class Player:
             return random.choice(['Juicy', 'Delicious', 'Spicy', 'Beautiful', 'Small', 'Huge', 'Creamy', 'Tangy'])
 
     def get_verb(self):
-        if "adjectives" in self.keywords:
-            return random.choice(self.keywords["adjectives"])
+        if "verb" in self.keywords:
+            return random.choice(self.keywords["verb"])
         else:
             return random.choice(['Whips up', 'Lovingly crafts', 'Assembles', 'Bakes', 'Fries up', 'Cooks up', 'Makes', 'Readies'])
 
@@ -183,20 +211,25 @@ def get_random_pair():
 
     return [p1, p2]
 
+
 def search_players(search_string):
     search_list = []
     for player in players:
         search_list.append({'obj':player, 'score':fuzz.partial_ratio(player.name, search_string)})
 
     result = None
-    high_score = 35 # base ratio it must meet.
+    high_score = 75 # base ratio it must meet.
+    high_score_tiebreaker = 0
     for elem in search_list:
         if elem['score'] > high_score:
             result = elem['obj']
             high_score = elem['score']
         elif elem['score'] == high_score:
-            result = None
-            high_score = elem['score']
+            tiebreaker = fuzz.ratio(elem['obj'].name, search_string)
+            if tiebreaker > high_score_tiebreaker:
+                result = elem['obj']
+                high_score_tiebreaker = tiebreaker
+                high_score = elem['score']
             # Copies will null each other out in case of confusion.
 
     return result

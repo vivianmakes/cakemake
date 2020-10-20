@@ -1,0 +1,14 @@
+name: "Humlina Trillby"
+icon: "trillby.png"
+pronoun: 'she'
+keywords:
+  sounds:
+    - "TWEETLE-DEE!!"
+    - "TWEETLE-DOO!!"
+    - "TWEETLE-DUM!!"
+  flavors:
+    - "birdseed"
+    - "poppyseed"
+    - "sunflower seed"
+  adjectives:
+    - "crunchy"

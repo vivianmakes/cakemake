@@ -1,0 +1,14 @@
+name: "Bigsby Briggs"
+icon: "bigsby.png"
+pronoun: 'he'
+keywords:
+  adjectives:
+    - 'beer-soaked'
+    - 'rum-soaked'
+    - 'extra-spicy'
+    - 'salty'
+    - 'cheese-drizzled'
+  cakes:
+    - 'chicken wings'
+    - 'pretzel'
+    - 'jalapeno popper'

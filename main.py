@@ -5,7 +5,7 @@ import botuser
 from config import credentials
 
 async def update_loop():
-    await asyncio.sleep(6)
+    await asyncio.sleep(30)
     await botuser.botuser.wait_until_ready()
     while not botuser.botuser.is_closed():
         await asyncio.sleep(30)
