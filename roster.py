@@ -39,6 +39,14 @@ class Player:
 
         self.keywords = output.get('keywords', {})
 
+    def post_match_results(self, did_win):
+        # resets after a match
+        self.cheer = 0
+        self.cheered_by = []
+        if did_win:
+            self.wins += 1
+        else:
+            self.losses += 1
 
     def add_cheer(self, user_object):
         if user_object.id not in self.cheered_by:

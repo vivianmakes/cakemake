@@ -126,10 +126,8 @@ async def run_show():
         new_embed.set_image(url='attachment://image.png')
         await broadcast_embed(new_embed, file=file)
 
-        p1.cheer = 0
-        p1.cheered_by = []
-        p2.cheer = 0
-        p2.cheered_by = []
+        p1.post_match_results(winner is p1)
+        p2.post_match_results(winner is p2)
         pending_show = None
     else:
         print("Couldn't start a show. No show was pending!")
