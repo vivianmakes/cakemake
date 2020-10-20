@@ -27,3 +27,5 @@ class Periodic:
                 print('>> ENCOUNTERED AN EXCEPTION IN RUN_SCHEDULED')
                 print(e)
                 raise e
+
+periodic = Periodic()
