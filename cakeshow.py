@@ -16,19 +16,21 @@ class Gameshow():
 pending_show = None
 
 def get_quality_text(quality):
-  text = "It's "
-  if quality >= 30:
-    text += "**LEGENDARY!!** :star::star::star::star::star:"
-  elif quality >= 15:
-    text += "**AMAZING!!** :star::star::star::star:"
-  elif quality >= 10:
-    text += "**REALLY GOOD!!** :star::star::star:"
-  elif quality >= 5:
-    text += "**Yummy!** :star::star:"
-  elif quality >= 3:
-    text += "**Okay!** :star:"
-  else:
-    text += "***HORRIBLE!!!*** :weary:"
+    text = "It's "
+    if quality >= 30:
+        text += "**LEGENDARY!!** :star::star::star::star::star:"
+    elif quality >= 15:
+        text += "**AMAZING!!** :star::star::star::star:"
+    elif quality >= 10:
+        text += "**REALLY GOOD!!** :star::star::star:"
+    elif quality >= 5:
+        text += "**Yummy!** :star::star:"
+    elif quality >= 3:
+        text += "**Okay!** :star:"
+    else:
+        text += "***HORRIBLE!!!*** :weary:"
+    return text
+
 
 def get_lucky_text():
   random_lucky_text = []
@@ -85,7 +87,7 @@ async def run_show():
           desc += ' ' + get_lucky_text()
           p1_quality += 30
 
-        desc += get_quality_text(p1_quality)
+        desc += ' ' + get_quality_text(p1_quality)
 
         # PT 2
 
@@ -101,7 +103,7 @@ async def run_show():
           desc += ' ' + get_lucky_text()
           p2_quality += 30
 
-        desc += get_quality_text(p1_quality)
+        desc += ' ' + get_quality_text(p2_quality)
 
         # RESULTS
 
@@ -125,7 +127,9 @@ async def run_show():
         await broadcast_embed(new_embed, file=file)
 
         p1.cheer = 0
+        p1.cheered_by = []
         p2.cheer = 0
+        p2.cheered_by = []
         pending_show = None
     else:
         print("Couldn't start a show. No show was pending!")
@@ -165,9 +169,9 @@ async def cheer(num, user_object):
 
   if user_object.id not in pending_show.cheered_by:
     if num == 1:
-      res = p1.add_cheer(user_object)
+      res = pending_show.participant1.add_cheer(user_object)
     elif num == 2:
-      res = p2.add_cheer(user_object)
+      res = pending_show.participant2.add_cheer(user_object)
     pending_show.cheered_by.append(user_object.id)
 
   return res

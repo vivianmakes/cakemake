@@ -22,7 +22,7 @@ class Periodic:
             self.schedule_next_event()
 
             try:
-                cakeshow.test_show()
+                await cakeshow.test_show()
             except Exception as e:
                 print('>> ENCOUNTERED AN EXCEPTION IN RUN_SCHEDULED')
                 print(e)

@@ -3,6 +3,7 @@ import random
 import glob
 import os
 import imaging
+import copy
 
 class Player:
     def __init__(self):
@@ -15,7 +16,7 @@ class Player:
         self.icon = 'professor.png'
         self.pronoun = 'they'
         self.cheer = 0
-        self.cheeredby = []
+        self.cheered_by = []
         self.wins = 0
         self.losses = 0
 
@@ -39,7 +40,7 @@ class Player:
         self.keywords = output.get('keywords', {})
 
 
-    def add_cheer(user_object):
+    def add_cheer(self, user_object):
         if user_object.id not in self.cheered_by:
           self.cheer += 1
           self.cheered_by.append(user_object.id)
@@ -127,16 +128,27 @@ players = []
 
 def get_random_pair():
     p1 = random.choice(players)
-    players_minus_p1 = players
+    players_minus_p1 = players.copy()
     players_minus_p1.remove(p1)
     p2 = random.choice(players_minus_p1)
 
     return [p1, p2]
 
 
-# LOAD ROSTER
+# LOAD ROSTER - INITIAL
+initial_roster_filenames = []
+potential_roster_filenames = []
 for filename in glob.glob('players/*.yaml'):
+    potential_roster_filenames.append(filename)
+
+while len(initial_roster_filenames) < 6:
+    choice = random.choice(potential_roster_filenames)
+    initial_roster_filenames.append(choice)
+    potential_roster_filenames.remove(choice)
+
+for filename in initial_roster_filenames:
     with open(os.path.join(os.getcwd(), filename), 'r') as f: #open file in readonly
         newplayer = Player()
         newplayer.build_from_yaml(f)
         players.append(newplayer)
+

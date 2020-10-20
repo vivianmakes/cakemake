@@ -23,6 +23,9 @@ class Botuser(commands.Bot):
         print('Channel Target:')
         print(credentials.broadcast_channel)
         print('--------------')
+        if self.broadcast_channel is None:
+            print("WARNING: couldn't find a broadcast channel! Are your ENVIRONMENT VARIABLES set right?")
+
 
     async def broadcast(self, message):
         await self.broadcast_channel.send(message)
@@ -56,3 +59,12 @@ async def cheer(ctx, arg):
       await ctx.send(':no_entry_sign: **NO CAN DO, BOSS** :no_entry_sign:\nPlease enter a contestant number in numeral form.')
   else:
     await ctx.send(':no_entry_sign: **NO CAN DO, BOSS** :no_entry_sign:\nNo contestants are currently baking. You must wait until contestants are baking!')
+
+
+@botuser.command(name='roster')
+async def list_roster(ctx):
+    if len(roster.players) > 0:
+        msg = "**CURRENT CONTESTANTS:**\n"
+        for player in roster.players:
+            msg += "\n-" + player.name
+        await ctx.send(msg)
