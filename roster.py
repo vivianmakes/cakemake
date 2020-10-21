@@ -30,17 +30,17 @@ class Player:
         input = yaml.load(in_yaml, Loader=yaml.BaseLoader)
 
         self.name = input.get('name', "Default")
-        self.talent = int(input.get('talent', random.randint(3, 7)))
-        self.luck = int(input.get('luck', random.randint(0, 8)))
-        self.unluck = int(input.get('unluck', random.randint(0, 8)))
+        self.talent = int(input.get('talent', random.randint(3, 8)))
+        self.luck = int(input.get('luck', random.randint(0, 9)))
+        self.unluck = int(input.get('unluck', random.randint(0, 9)))
         self.alignment = int(input.get('alignment', random.randint(-100, 100)))
         self.fame = int(input.get('fame', 0))
         self.icon = input.get('icon', 'professor.png')
         self.pronoun = input.get('pronoun', 'they')
         self.wins = int(input.get('wins', 0))
         self.losses = int(input.get('losses', 0))
-        self.vibe = int(input.get('vibe', random.randrange(-1, 1)))
-        self.reliability = int(input.get('reliability', random.randrange(0, 2)))
+        self.vibe = int(input.get('vibe', random.randrange(-1, 2)))
+        self.reliability = int(input.get('reliability', random.randrange(0, 3)))
 
         self.keywords = input.get('keywords', {})
 
