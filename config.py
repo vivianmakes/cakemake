@@ -13,6 +13,7 @@ class Config():
     def __init__(self):
         self.persistent = False
         self.public_test = False
+        self.interval = 5  # minimum 3, right now
 
 
 credentials = Credentials()

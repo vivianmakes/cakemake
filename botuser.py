@@ -51,7 +51,7 @@ async def cheer(ctx, *args):
         result = player.add_cheer(ctx.author)
         if result:
             new_embed = discord.Embed(title="CHEER RESULT",
-                                      description="You cheer on " + result.name + "!\n",
+                                      description="You cheer on " + player.name + "!\n",
                                       color=0x458dd6)
         else:
             await messaging.send_error_message("You've already cheered this contestant during this show.")

@@ -3,19 +3,20 @@ import messaging
 import periodic
 import arrow
 import roster
+from config import config
 
 
 class Gameshow():
     def __init__(self, p1, p2):
         self.participant1 = p1
         self.participant2 = p2
-        p1.on_added_to_show()
-        p2.on_added_to_show()
+        p1.on_added_to_show(self)
+        p2.on_added_to_show(self)
 
     def get_participant_list(self):
         return [self.participant1, self.participant2]
 
-    def run(self):
+    async def finish_show(self):
         p1 = self.participant1
         p2 = self.participant2
 
@@ -49,12 +50,12 @@ class Gameshow():
             else:
                 winner = p2
 
-        messaging.send_victory_message(desc, winner)
+        await messaging.send_victory_message(desc, winner)
 
         p1.post_match_results(winner is p1)
         p2.post_match_results(winner is p2)
-        p1.on_show_end()
-        p2.on_show_end()
+        p1.on_show_end(self)
+        p2.on_show_end(self)
 
 
 def get_quality_text(quality):
@@ -100,6 +101,7 @@ def get_unlucky_text():
 async def start_show(p1, p2):
     show = Gameshow(p1, p2)
     await messaging.send_versus_message(p1, p2)
+    periodic.schedule_new_event(time=arrow.utcnow().shift(minutes=config.interval-2), func=show.finish_show)
     return show
 
 
@@ -115,7 +117,10 @@ async def start_random_show():
 
     await start_show(p1, p2)
 
+
+async def handle_show_update():
+    print('tbd')
+
 # --
 
-print('adding')
-periodic.schedule_new_event(time=arrow.utcnow(), func=start_random_show, loops=True)
+periodic.schedule_new_event(time=arrow.utcnow(), func=start_random_show, loop_minutes=config.interval)

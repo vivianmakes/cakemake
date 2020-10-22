@@ -66,7 +66,7 @@ class Player:
     def on_added_to_show(self, show):
         self.in_shows.append(show)
 
-    def on_show_finish(self, show):
+    def on_show_end(self, show):
         self.cheer = 0
         self.cheered_by = []
         self.in_shows.remove(show)
