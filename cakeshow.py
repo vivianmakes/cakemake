@@ -12,6 +12,7 @@ class Gameshow():
         self.participant2 = p2
         p1.on_added_to_show(self)
         p2.on_added_to_show(self)
+        self.minutes_until_resolve = config.interval
 
     def get_participant_list(self):
         return [self.participant1, self.participant2]
@@ -98,10 +99,15 @@ def get_unlucky_text():
   return random.choice(random_unlucky_text)
 
 
+shows = []
+
+
 async def start_show(p1, p2):
+    global shows
+
     show = Gameshow(p1, p2)
     await messaging.send_versus_message(p1, p2)
-    periodic.schedule_new_event(time=arrow.utcnow().shift(minutes=config.interval-2), func=show.finish_show)
+    shows.append(show)
     return show
 
 
@@ -114,13 +120,39 @@ async def start_random_show():
     matchup = roster.get_matchup()
     p1 = matchup[0]
     p2 = matchup[1]
-
+    roster.bench_player(p1)
+    roster.bench_player(p2)
     await start_show(p1, p2)
 
 
+async def finish_show(show):
+    global shows
+
+    await show.finish_show()
+    shows.remove(show)
+    return show
+
+matches_until_elimination = 9
+
+
 async def handle_show_update():
-    print('tbd')
+    global matches_until_elimination
+
+    if matches_until_elimination >= 0:
+        if len(shows) > 0:
+            for show in shows:
+                show.minutes_until_resolve += -1
+                if show.minutes_until_resolve == 0:
+                    await finish_show(show)
+        else:
+            await start_random_show()
+        matches_until_elimination += -1
+    else:
+        roster.eliminate_player()
+        matches_until_elimination = 9
+
+
 
 # --
 
-periodic.schedule_new_event(time=arrow.utcnow(), func=start_random_show, loop_minutes=config.interval)
+periodic.schedule_new_event(time=arrow.utcnow(), func=handle_show_update, loop_minutes=1)

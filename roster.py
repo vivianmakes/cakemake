@@ -4,6 +4,7 @@ import os
 import imaging
 import glob
 from fuzzywuzzy import fuzz
+import messaging
 
 
 class Player:
@@ -233,18 +234,55 @@ def get_matchup():
     if len(ideal_players) > 0:
         p1 = random.choice(ideal_players)
         ideal_players.remove(p1)
-        all_players.remove(p1)
     else:
         p1 = random.choice(all_players)
-        all_players.remove(p1)
+    all_players.remove(p1)
 
     if len(ideal_players) > 0:
         p2 = random.choice(ideal_players)
+        ideal_players.remove(p2)
     else:
         p2 = random.choice(all_players)
 
+    if len(ideal_players) <= 0:
+        reset_bench()
+
     return [p1, p2]
 
+
+def eliminate_player(player):
+    reset_bench()
+
+    working_lowest_ratio = 999
+    contenders_for_elimination = []
+    eliminate = None
+    for player in players:
+        try:
+            ratio = player.wins/player.losses
+        except ZeroDivisionError:
+            ratio = 999
+
+        if ratio < working_lowest_ratio:
+            contenders_for_elimination = [player]
+        elif ratio == working_lowest_ratio:
+            contenders_for_elimination.append(player)
+
+        eliminate = random.choice(contenders_for_elimination)
+
+    if eliminate is not None:
+        players.remove(eliminate)
+        messaging.send_elimination_message(eliminate)
+
+
+
+def bench_player(player):
+    global players_on_bench
+    players_on_bench.append(player)
+
+
+def reset_bench():
+    global players_on_bench
+    players_on_bench = []
 
 def search_players(search_string):
     search_list = []

@@ -43,8 +43,19 @@ async def send_victory_message(in_desc, winner):
 	file = imaging.get_image_file(graphic)
 	await broadcast_embed(new_embed, file=file)
 
+
 async def send_error_message(in_desc):
 	new_embed = discord.Embed(title = "ERROR!",
 							  description = in_desc,
+							  color = 0x458dd6)
+	await broadcast_embed(new_embed)
+
+
+async def send_elimination_message(eliminated_player):
+	desc = "The judges have decided - "
+	desc += eliminated_player.name
+	desc += " - shall be **ELIMINATED!**\nThey will no longer be able to participate and have retired!"
+	new_embed = discord.Embed(title = "ELIMINATED!",
+							  description = desc,
 							  color = 0x458dd6)
 	await broadcast_embed(new_embed)
