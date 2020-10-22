@@ -2,9 +2,9 @@ import yaml
 import random
 import os
 import imaging
-import copy
 import glob
 from fuzzywuzzy import fuzz
+
 
 class Player:
     def __init__(self):
@@ -24,6 +24,9 @@ class Player:
         self.reliability = 0
 
         self.keywords = {}
+
+        self.in_shows = []
+
 
     def build_from_yaml(self, in_yaml):
 
@@ -46,8 +49,6 @@ class Player:
 
     def post_match_results(self, did_win):
         # resets after a match
-        self.cheer = 0
-        self.cheered_by = []
         vibe_up_chance = 50
 
         if did_win:
@@ -62,13 +63,21 @@ class Player:
         else:
             self.vibe = ((self.vibe - 1 + 2) % 5) - 2  # Cycles: 0 -> -1 -> -2 -> 2 -> 1 -> 0
 
+    def on_added_to_show(self, show):
+        self.in_shows.append(show)
+
+    def on_show_finish(self, show):
+        self.cheer = 0
+        self.cheered_by = []
+        self.in_shows.remove(show)
+
     def add_cheer(self, user_object):
         if user_object.id not in self.cheered_by:
-          self.cheer += 1
-          self.cheered_by.append(user_object.id)
-          return True
+            self.cheer += 1
+            self.cheered_by.append(user_object.id)
+            return True
         else:
-          return False
+            return False
 
     def get_roll(self):
         roll = random.randint(0, self.talent+self.cheer+self.vibe)
@@ -201,6 +210,7 @@ class Player:
 
 # INIT ROSTER
 players = []
+players_on_bench = []
 
 
 def get_random_pair():
@@ -208,6 +218,30 @@ def get_random_pair():
     players_minus_p1 = players.copy()
     players_minus_p1.remove(p1)
     p2 = random.choice(players_minus_p1)
+
+    return [p1, p2]
+
+
+def get_matchup():
+    ideal_players = []
+    all_players = players.copy()
+
+    for player in all_players:
+        if player not in players_on_bench and len(player.in_shows) == 0:
+            ideal_players.append(player)
+
+    if len(ideal_players) > 0:
+        p1 = random.choice(ideal_players)
+        ideal_players.remove(p1)
+        all_players.remove(p1)
+    else:
+        p1 = random.choice(all_players)
+        all_players.remove(p1)
+
+    if len(ideal_players) > 0:
+        p2 = random.choice(ideal_players)
+    else:
+        p2 = random.choice(all_players)
 
     return [p1, p2]
 

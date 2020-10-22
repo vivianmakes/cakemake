@@ -4,6 +4,7 @@ from io import BytesIO
 import discord
 import io
 
+
 def get_portrait_path(filename):
     portrait_path = os.path.join('portraits', filename)
     image_path = os.path.join(os.getcwd(), portrait_path)
@@ -53,3 +54,10 @@ def get_image_file(image_object):
         image_object.save(image_binary, 'PNG')
         image_binary.seek(0)
         return discord.File(fp=image_binary, filename='image.png')
+
+
+def get_vs_graphic(impath1, impath2):
+    return concatenate_multiple(impath1, "images/vs.png", impath2)
+
+def get_win_graphic(impath):
+    return concatenate_multiple("images/win_l.png", impath, "images/win_r.png")
