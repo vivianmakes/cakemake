@@ -66,18 +66,22 @@ async def list_roster(ctx):
         sortedroster = roster.players.copy()
         sortedroster.sort(key=compare_wins, reverse=True)
 
+        portrait_paths = []
         for player in sortedroster:
             msg += "\n`[" + str(player.wins) + "-" + str(player.losses) + "]` " + player.name
             msg += " - "
             msg += player.get_vibe_emojis()
+            portrait_paths.append(player.get_portrait_path())
+
+        im_roster = imaging.get_roster_graphic(portrait_paths)
 
         new_embed = discord.Embed(title = title,
                                   description = msg,
                                   color = 0x458dd6)
-        # file = imaging.get_image_file(im_winner)
-        # new_embed.set_image(url = 'attachment://image.png')
+        file = imaging.get_image_file(im_roster)
+        new_embed.set_image(url = 'attachment://image.png')
 
-        await ctx.send(embed=new_embed)
+        await ctx.send(embed=new_embed, file=file)
 
 
 def compare_wins(in_player):

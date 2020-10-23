@@ -61,3 +61,22 @@ def get_vs_graphic(impath1, impath2):
 
 def get_win_graphic(impath):
     return concatenate_multiple("images/win_l.png", impath, "images/win_r.png")
+
+def get_roster_graphic(path_list):
+    images = []
+    tile_size = 64
+    for iter in path_list:
+        img = Image.open(iter)
+        img = img.resize((tile_size, tile_size), Image.ANTIALIAS)
+        images.append(img)
+
+    product = Image.new('RGBA', (384, 64))
+    bg = Image.open('images/roster_back.png')
+    product.paste(bg, (0, 0))
+
+    cursorx = 0
+    for image in images:
+        product.paste(image, (cursorx, 0))
+        cursorx += 64
+
+    return product

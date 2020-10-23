@@ -13,7 +13,7 @@ class Config():
     def __init__(self):
         self.persistent = False
         self.public_test = False
-        self.interval = 0.25  # in minutes
+        self.interval = 1  # in minutes
 
 
 credentials = Credentials()
