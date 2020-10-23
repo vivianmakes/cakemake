@@ -1,3 +1,7 @@
 name: "Fleabag Jones"
 icon: "flea.png"
 pronoun: 'he'
+stats:
+  strength: 3
+  smarts: 3
+  kindness: 4

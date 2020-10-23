@@ -1,6 +1,7 @@
 import botuser
 import discord
 import imaging
+import prose
 
 async def broadcast_embed(embed, file=None):
 	if file is not None:
@@ -29,16 +30,18 @@ async def send_versus_message(p1, p2):
 	await broadcast_embed(new_embed, file=file)
 
 
-async def send_victory_message(in_desc, winner):
-	description = in_desc
+async def send_victory_message(result):
+	# IN: A result.
+	desc = result.p1_details.text_event + "\n" + result.p1_details.text_decision
+	desc += "\n\n" + result.p2_details.text_event + "\n" + result.p2_details.text_decision
+	winner = result.winner
 
-	im_winner = winner.get_portrait_path()
-	graphic = imaging.get_win_graphic(im_winner)
-	description += "\n\n*" + winner.name + "* has swayed the judges with " + winner.get_pronoun(
+	graphic = imaging.get_win_graphic(result)
+	desc += "\n\n*" + winner.name + "* has swayed the judges with " + winner.get_pronoun(
 		'their') + " skill! ***VICTORY! :sparkles:***"
 
 	new_embed = discord.Embed(title = "THE WINNER IS...",
-							  description = description,
+							  description = desc,
 							  color = 0x7aa54c)
 	file = imaging.get_image_file(graphic)
 	await broadcast_embed(new_embed, file=file)
@@ -63,7 +66,8 @@ async def send_elimination_message(eliminated_player):
 	desc += eliminated_player.name
 	desc += "*** shall be **ELIMINATED!** :x:\n"
 	desc += eliminated_player.get_pronoun('they')
-	desc += " will no longer be able to participate and has retired!"
+	desc += " will no longer be able to participate!"
+	desc += "\n" + prose.random("elimination.yaml").replace("[Name]", eliminated_player.name)
 	new_embed = discord.Embed(title = "ELIMINATED!",
 							  description = desc,
 							  color = 0x458dd6)

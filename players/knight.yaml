@@ -1,3 +1,5 @@
 name: "Reginald Reginald"
 icon: "knight.png"
 pronoun: 'he'
+stats:
+  strength: 5

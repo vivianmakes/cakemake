@@ -1,3 +1,7 @@
 name: "William Scoffington III"
 icon: "william.png"
 pronoun: 'he'
+stats:
+  strength: 0
+  smarts: 5
+  kindness: 0

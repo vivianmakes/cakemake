@@ -4,3 +4,6 @@ pronoun: 'she'
 keywords:
   sounds:
     - "..."
+stats:
+  strength: 1
+  smarts: 1

@@ -107,6 +107,7 @@ async def inspect(ctx, *args):
         desc += "\n**Talent:** " + result.get_talent_description()
         desc += "\n**Reliability:** " + result.get_reliability_description()
         desc += "\n**Horoscope:** " + result.get_luck_description()
+        desc += "\n**Disposition:** " + result.get_disposition_description()
 
         im = imaging.open_image_path(result.get_portrait_path())
         file = imaging.get_image_file(im)

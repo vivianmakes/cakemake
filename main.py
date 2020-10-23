@@ -8,6 +8,7 @@ import cakeshow
 async def update_loop():
     await asyncio.sleep(10)
     await botuser.botuser.wait_until_ready()
+    await cakeshow.new_bracket()
     while not botuser.botuser.is_closed():
         await periodic.update()  # would like to move this into periodic for better encapsulation
         await asyncio.sleep(5)

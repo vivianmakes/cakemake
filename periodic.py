@@ -4,6 +4,7 @@ import roster
 import arrow
 import messaging
 from config import config
+import prose
 
 
 class Event:
@@ -21,6 +22,7 @@ class Event:
 
 async def send_elimination_warning():
     desc = "The judges meet in their soundproof chambers to discuss the rankings... :warning:"
+    desc += "\n" + prose.random('elimination_warning.yaml')
     await messaging.send_general_message("THE JUDGES DELIBERATE...", desc)
 
 
@@ -43,11 +45,11 @@ class Periodic:
         self.events.append(event)
 
     async def update(self):
-
-        if self.hold_event_queue_until < arrow.utcnow() or len(self.events) > 0:
-            if self.hold_event_queue_until and len(self.events) > 0:
-                self.hold_event_queue_until = await self.events[0].run()
-                self.remove_event(self.events[0])
+        if self.hold_event_queue_until >= arrow.utcnow():
+            return
+        elif self.hold_event_queue_until < arrow.utcnow() and len(self.events) > 0:
+            self.hold_event_queue_until = await self.events[0].run()
+            self.remove_event(self.events[0])
         else:
             if self.hold_show_until < arrow.utcnow():
                 if len(cakeshow.shows) == 0:
@@ -57,16 +59,22 @@ class Periodic:
                     else:
                         self.shows_since_last_elimination = 0
                         await roster.eliminate_player()
-                        self.hold_show_until = arrow.utcnow().shift(minutes=5)
+                        self.hold_show_until = arrow.utcnow().shift(minutes=min(config.interval, 5))
+                        if len(roster.players) == 1:
+                            await cakeshow.finish_bracket()
+                            self.events = []  # CLEAR the event queue!
+                            await cakeshow.new_bracket()
+                            self.hold_event_queue_until = arrow.utcnow().shift(minutes=config.minutes_between_brackets)
                 else:
                     await cakeshow.finish_show()
+                    self.hold_show_until = arrow.utcnow().shift(minutes=min(config.interval, 2))
                     self.shows_since_last_elimination += 1
-                    if self.shows_since_last_elimination == get_matches_before_elimination():
-                        schedule_new_event(func=send_elimination_warning, duration=5)
+                    if self.shows_since_last_elimination >= get_matches_before_elimination():
+                        schedule_new_event(func=send_elimination_warning, duration=min(config.interval, 5))
 
 
 def get_matches_before_elimination():
-    return min(len(roster.players) * 1.5, 6)
+    return len(roster.players)
 
 
 def schedule_new_event(duration=0, func=None):
@@ -76,6 +84,5 @@ def schedule_new_event(duration=0, func=None):
 
 
 periodic = Periodic()
-schedule_new_event(func=send_bracket_warning, duration=1)
 
 

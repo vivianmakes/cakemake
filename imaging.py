@@ -59,8 +59,55 @@ def get_image_file(image_object):
 def get_vs_graphic(impath1, impath2):
     return concatenate_multiple(impath1, "images/vs.png", impath2)
 
-def get_win_graphic(impath):
-    return concatenate_multiple("images/win_l.png", impath, "images/win_r.png")
+
+def get_win_graphic(result):
+    # IN: A result.
+    pimages = []
+    ppaths = [result.p1.get_portrait_path(), "images/spacer.png", result.p2.get_portrait_path()]
+    for path in ppaths:
+        pimages.append(Image.open(path))
+
+    p1_judge_images = []
+    for judgy in result.p1_details.judges:
+        p1_judge_images.append(Image.open(judgy.get_portrait_path()))
+    p2_judge_images = []
+    for judgy in result.p2_details.judges:
+        p2_judge_images.append(Image.open(judgy.get_portrait_path()))
+
+    height = 0
+    width = 0
+    for image in pimages:
+        height = max(height, image.height)
+        width += image.width
+    height += 55
+
+    product = Image.new('RGBA', (width, height))
+
+    cursorx = 0
+    for pimage in pimages:
+        product.paste(pimage, (cursorx, 0))
+        cursorx += pimage.width
+
+    cursorx=0
+    for jimage in p1_judge_images:
+        resized = jimage.resize((48, 48), Image.ANTIALIAS)
+        product.paste(resized, (cursorx, height-50))
+        cursorx += resized.width + 3
+
+    cursorx = 48
+    for jimage in p2_judge_images:
+        resized = jimage.resize((48, 48), Image.ANTIALIAS)
+        product.paste(resized, (width-cursorx, height - 50))
+        cursorx += resized.width + 3
+
+    cursorx = 0
+    if result.winner is result.p2:
+        cursorx = width-150
+    foreground = Image.open("images/outline.png")
+    product.paste(foreground, (cursorx, 0), foreground)
+
+    return product
+
 
 def get_roster_graphic(path_list):
     images = []

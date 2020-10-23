@@ -10,3 +10,7 @@ keywords:
     - 'ghostly'
     - 'ethereal'
     - 'translucent'
+stats:
+  strength: 2
+  smarts: 4
+  kindness: 1

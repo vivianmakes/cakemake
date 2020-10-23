@@ -1,3 +1,6 @@
 name: "Lisa Lisa"
 icon: "lisa.png"
 pronoun: 'she'
+stats:
+  strength: 1
+  smarts: 6

@@ -9,3 +9,7 @@ keywords:
     - "BARK BARK!"
   cakes:
     - "Angel Food Cake"
+stats:
+  strength: 1
+  smarts: 1
+  kindness: 7

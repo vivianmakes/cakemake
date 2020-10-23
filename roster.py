@@ -13,7 +13,6 @@ class Player:
         self.talent = 0
         self.luck = 0
         self.unluck = 0
-        self.alignment = 0
         self.fame = 0
         self.icon = 'professor.png'
         self.pronoun = 'they'
@@ -25,6 +24,7 @@ class Player:
         self.reliability = 0
 
         self.keywords = {}
+        self.stats = {}
 
         self.in_shows = []
 
@@ -37,7 +37,6 @@ class Player:
         self.talent = int(input.get('talent', random.randint(3, 8)))
         self.luck = int(input.get('luck', random.randint(0, 9)))
         self.unluck = int(input.get('unluck', random.randint(0, 9)))
-        self.alignment = int(input.get('alignment', random.randint(-100, 100)))
         self.fame = int(input.get('fame', 0))
         self.icon = input.get('icon', 'professor.png')
         self.pronoun = input.get('pronoun', 'they')
@@ -47,6 +46,9 @@ class Player:
         self.reliability = int(input.get('reliability', random.randrange(0, 3)))
 
         self.keywords = input.get('keywords', {})
+        self.stats['strength'] = int(input.get('stats', {}).get('strength', random.randrange(0,5)))
+        self.stats['smarts'] = int(input.get('stats', {}).get('smarts', random.randrange(0, 5)))
+        self.stats['kindness'] = int(input.get('stats', {}).get('kindness', random.randrange(0, 5)))
 
     def post_match_results(self, did_win):
         # resets after a match
@@ -88,6 +90,16 @@ class Player:
         roll += self.reliability
         return roll
 
+    def get_stat_roll(self, statword):
+        if statword in self.stats:
+            if self.stats[statword] > 0:
+                out = random.randrange(0, self.stats[statword])
+            else:
+                out = 0
+        else:
+            out = random.randrange(0, 3)
+        return out
+
     def get_vibe_emojis(self):
         msg = ""
         if self.vibe > 0:
@@ -99,6 +111,26 @@ class Player:
         else:
             msg += ":white_sun_cloud:"
         return msg
+
+    def get_disposition_description(self):
+        kind = self.stats.get("kindness", 0)
+        smart = self.stats.get("smarts", 0)
+        strong = self.stats.get("strength", 0)
+
+        if kind+smart+strong < 2:
+            return "Pathetic"
+        elif kind+smart+strong < 5:
+            return "Sleepy"
+        elif kind > smart+strong:
+            return "Charitable"
+        elif smart > kind+strong:
+            return "Knowledgeable"
+        elif strong > kind+smart:
+            return "Brave"
+        else:
+            return "Lovely"
+
+
 
     def get_luck_description(self):
         msg = "Even"
@@ -247,9 +279,6 @@ def get_matchup():
     else:
         p2 = random.choice(all_players)
 
-    if len(ideal_players) <= 0:
-        reset_bench()
-
     return [p1, p2]
 
 
@@ -279,9 +308,18 @@ async def eliminate_player():
 
 
 
-def bench_player(player):
+def bench_players(player_list):
     global players_on_bench
-    players_on_bench.append(player)
+    for player in player_list:
+        players_on_bench.append(player)
+
+    ideal_players = []
+    for player in players:
+        if player not in players_on_bench and len(player.in_shows) == 0:
+            ideal_players.append(player)
+
+    if len(ideal_players) == 0:
+        reset_bench()
 
 
 def reset_bench():
@@ -311,23 +349,26 @@ def search_players(search_string):
     return result
 
 
+def build_new_roster():
+    global players
+
+    players = []  # empty players
+    initial_roster_filenames = []
+    potential_roster_filenames = []
+    for filename in glob.glob('players/*.yaml'):
+        potential_roster_filenames.append(filename)
+
+    while len(initial_roster_filenames) < 6:
+        choice = random.choice(potential_roster_filenames)
+        initial_roster_filenames.append(choice)
+        potential_roster_filenames.remove(choice)
+
+    for filename in initial_roster_filenames:
+        with open(os.path.join(os.getcwd(), filename), 'r') as f:  # open file in readonly
+            newplayer = Player()
+            newplayer.build_from_yaml(f)
+            players.append(newplayer)
 
 
 
-# LOAD ROSTER - INITIAL
-initial_roster_filenames = []
-potential_roster_filenames = []
-for filename in glob.glob('players/*.yaml'):
-    potential_roster_filenames.append(filename)
-
-while len(initial_roster_filenames) < 6:
-    choice = random.choice(potential_roster_filenames)
-    initial_roster_filenames.append(choice)
-    potential_roster_filenames.remove(choice)
-
-for filename in initial_roster_filenames:
-    with open(os.path.join(os.getcwd(), filename), 'r') as f: #open file in readonly
-        newplayer = Player()
-        newplayer.build_from_yaml(f)
-        players.append(newplayer)
 

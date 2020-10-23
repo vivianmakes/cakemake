@@ -12,3 +12,7 @@ keywords:
     - 'chicken wings'
     - 'pretzel'
     - 'jalapeno popper'
+stats:
+  strength: 5
+  smarts: 1
+  kindness: 5

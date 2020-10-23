@@ -1,3 +1,5 @@
 name: "Eyespy"
 icon: "eyespy.png"
 pronoun: 'he'
+stats:
+  smarts: 5
