@@ -45,17 +45,17 @@ botuser = Botuser(command_prefix='!')
 async def cheer(ctx, *args):
     search_string = " ".join(args[:])
     player = roster.search_players(search_string)  # returns a player or none
+    desc = ""
     if player is None:
-        await messaging.send_error_message("Couldn't figure out who you meant. Try being more specific.")
+        desc = "Couldn't figure out who you meant. Try being more specific."
     else:
         result = player.add_cheer(ctx.author)
         if result:
-            new_embed = discord.Embed(title="CHEER RESULT",
-                                      description="You cheer on " + player.name + "!\n",
-                                      color=0x458dd6)
+            desc = ":tada: You cheer on " + player.name + "!"
         else:
-            await messaging.send_error_message("You've already cheered this contestant during this show.")
-        await ctx.send(embed=new_embed)
+            desc = "You've already cheered this contestant during this show."
+
+    await ctx.send(desc)
 
 
 @botuser.command(name='roster')

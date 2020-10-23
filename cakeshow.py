@@ -4,6 +4,9 @@ import roster
 from config import config
 import judges
 import prose
+import periodic
+from functools import partial
+
 
 class Gameshow():
     def __init__(self, p1, p2):
@@ -73,17 +76,20 @@ async def finish_bracket():
     if len(roster.players) == 1:
         winner = roster.players[0]
         desc = ":crown: CONGRATULATIONS! **" + winner.name + "** IS THE NEW **CAKE MAKE CHAMPION**!"
-        desc += "\n\n A ***BEAM OF LIGHT** envelops "  + winner.get_pronoun('them') + " and with a blinding flash, they "
-        desc += "***ASCEND***."
+        desc += "\n\n A ***BEAM OF LIGHT*** envelops "  + winner.get_pronoun('them') + " and with a blinding flash, they "
+        desc += "__***ASCEND***__."
         desc += "\n\n " + prose.random('finish_bracket.yaml')
         desc += "\n\n *The bracket is over. A new bracket will start soon.*"
-        await messaging.send_general_message("LONG LIVE THE CHAMPION", desc)
+        periodic.schedule_new_event(func=lambda: messaging.send_general_message("LONG LIVE THE CHAMPION", desc))
 
 
 async def new_bracket():
     roster.build_new_roster()
     desc = "*A new bracket has started. Who will win the crown?*"
+    desc += "\n\n**PARTICPANTS FOR THIS BRACKET:**\n"
+    for player in roster.players:
+        desc += "*" + player.name + "*, "
     desc += "\n\n**JUDGES FOR THIS BRACKET:**"
     desc += "\n*Judge Simon*, *Judge Paula*, and *Judge Vega Soulscream*."
     desc += "\n\n " + prose.random('new_bracket.yaml')
-    await messaging.send_general_message("A NEW BRACKET BEGINS...", desc)
+    periodic.schedule_new_event(func=lambda: messaging.send_general_message("A NEW BRACKET BEGINS...", desc))

@@ -329,7 +329,7 @@ def reset_bench():
 def search_players(search_string):
     search_list = []
     for player in players:
-        search_list.append({'obj':player, 'score':fuzz.partial_ratio(player.name, search_string)})
+        search_list.append({'obj':player, 'score':fuzz.partial_ratio(player.name.lower(), search_string.lower())})
 
     result = None
     high_score = 75 # base ratio it must meet.
@@ -339,7 +339,7 @@ def search_players(search_string):
             result = elem['obj']
             high_score = elem['score']
         elif elem['score'] == high_score:
-            tiebreaker = fuzz.ratio(elem['obj'].name, search_string)
+            tiebreaker = fuzz.ratio(elem['obj'].name.lower(), search_string.lower())
             if tiebreaker > high_score_tiebreaker:
                 result = elem['obj']
                 high_score_tiebreaker = tiebreaker

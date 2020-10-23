@@ -1,0 +1,5 @@
+name: "Cap'n Bubbles"
+icon: "captain.png"
+pronoun: 'he'
+stats:
+  strength: 6

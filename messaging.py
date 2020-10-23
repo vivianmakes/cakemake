@@ -22,7 +22,7 @@ async def send_versus_message(p1, p2):
 
 	res = imaging.get_vs_graphic(im1, im2)
 
-	new_embed = discord.Embed(title="UP NEXT...", description="The following contestants will bake next. The winner will be announced soon.\nUse the `!cheer [part of name]` command to cheer for the contestant you think will win. (Or want to win!)", color=0xffd300)
+	new_embed = discord.Embed(title="UP NEXT...", description="The following contestants will bake next. Use the `!cheer [part of name]` command to cheer for the contestant you want to win.", color=0xffd300)
 	new_embed.add_field(name=n1, value=d1, inline=True)
 	new_embed.add_field(name=n2, value=d2, inline=True)
 	file = imaging.get_image_file(res)

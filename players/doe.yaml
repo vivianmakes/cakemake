@@ -1,0 +1,11 @@
+name: "Jane Doe"
+icon: "doe.png"
+pronoun: 'she'
+unluck: 0
+luck: 12
+talent: 4
+reliability: 0
+stats:
+  strength: 0
+  smarts: 0
+  kindness: 7

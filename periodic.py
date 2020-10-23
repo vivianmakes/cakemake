@@ -59,12 +59,16 @@ class Periodic:
                     else:
                         self.shows_since_last_elimination = 0
                         await roster.eliminate_player()
+                        if len(roster.players) >= 5:
+                            await roster.eliminate_player()
                         self.hold_show_until = arrow.utcnow().shift(minutes=min(config.interval, 5))
                         if len(roster.players) == 1:
-                            await cakeshow.finish_bracket()
                             self.events = []  # CLEAR the event queue!
-                            await cakeshow.new_bracket()
+                            await cakeshow.finish_bracket()
+                            await self.events[0].run()
                             self.hold_event_queue_until = arrow.utcnow().shift(minutes=config.minutes_between_brackets)
+                            await cakeshow.new_bracket()
+
                 else:
                     await cakeshow.finish_show()
                     self.hold_show_until = arrow.utcnow().shift(minutes=min(config.interval, 2))
@@ -74,8 +78,15 @@ class Periodic:
 
 
 def get_matches_before_elimination():
-    return len(roster.players)
-
+    length = len(roster.players)
+    if length >= 6:
+        return 6
+    if length >= 4:
+        return 3
+    if length >= 3:
+        return 2
+    if length >= 2:
+        return 1
 
 def schedule_new_event(duration=0, func=None):
     global periodic

@@ -7,6 +7,7 @@ class Judge:
         self.valued_stat = None
         self.icon = "simon.png"
 
+
     def get_portrait_path(self):
         return imaging.get_portrait_path(self.icon)
 
@@ -45,12 +46,12 @@ def build_judges():
     paula = Judge()
     paula.valued_stat = "kindness"
     paula.name = "Judge Paula"
-    paula.icon = "trillby.png"
+    paula.icon = "paula.png"
 
     vega = Judge()
     vega.valued_stat = "strength"
     vega.name = "Judge Vega Soulscream"
-    vega.icon = "orb.png"
+    vega.icon = "vega.png"
 
     out.append(simon)
     out.append(paula)
