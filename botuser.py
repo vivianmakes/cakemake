@@ -81,7 +81,11 @@ async def list_roster(ctx):
 
 
 def compare_wins(in_player):
-    return in_player.wins-in_player.losses
+    try:
+        ratio = in_player.wins/(in_player.wins+in_player.losses)
+    except ZeroDivisionError:
+        ratio = 1
+    return ratio
 
 
 @botuser.command(name='inspect')

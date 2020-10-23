@@ -70,7 +70,10 @@ class Player:
     def on_show_end(self, show):
         self.cheer = 0
         self.cheered_by = []
-        self.in_shows.remove(show)
+        try:
+            self.in_shows.remove(show)
+        except ValueError:
+            print("Couldn't remove player from show.")
 
     def add_cheer(self, user_object):
         if user_object.id not in self.cheered_by:
@@ -163,7 +166,7 @@ class Player:
         if "cakes" in self.keywords:
             return random.choice(self.keywords["cakes"])
         else:
-            return random.choice(['Wedding Cake', 'Bunt Cake', 'Layer Cake', 'Birthday Cake', 'Pound Cake', 'Fruit Pie', 'Ice Cream Cake', 'Tart'])
+            return random.choice(['Wedding Cake', 'Bundt Cake', 'Layer Cake', 'Birthday Cake', 'Pound Cake', 'Fruit Pie', 'Ice Cream Cake', 'Tart'])
 
     def get_cake_flavor(self):
         if "flavors" in self.keywords:
@@ -250,7 +253,7 @@ def get_matchup():
     return [p1, p2]
 
 
-def eliminate_player(player):
+async def eliminate_player():
     reset_bench()
 
     working_lowest_ratio = 999
@@ -258,12 +261,13 @@ def eliminate_player(player):
     eliminate = None
     for player in players:
         try:
-            ratio = player.wins/player.losses
+            ratio = player.wins/(player.wins+player.losses)
         except ZeroDivisionError:
-            ratio = 999
+            ratio = 1
 
         if ratio < working_lowest_ratio:
             contenders_for_elimination = [player]
+            working_lowest_ratio = ratio
         elif ratio == working_lowest_ratio:
             contenders_for_elimination.append(player)
 
@@ -271,7 +275,7 @@ def eliminate_player(player):
 
     if eliminate is not None:
         players.remove(eliminate)
-        messaging.send_elimination_message(eliminate)
+        await messaging.send_elimination_message(eliminate)
 
 
 

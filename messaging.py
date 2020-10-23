@@ -51,10 +51,19 @@ async def send_error_message(in_desc):
 	await broadcast_embed(new_embed)
 
 
+async def send_general_message(title, desc, color=0x458dd6):
+	new_embed = discord.Embed(title = title,
+							  description = desc,
+							  color = color)
+	await broadcast_embed(new_embed)
+
+
 async def send_elimination_message(eliminated_player):
-	desc = "The judges have decided - "
+	desc = "The judges have decided - ***"
 	desc += eliminated_player.name
-	desc += " - shall be **ELIMINATED!**\nThey will no longer be able to participate and have retired!"
+	desc += "*** shall be **ELIMINATED!** :x:\n"
+	desc += eliminated_player.get_pronoun('they')
+	desc += " will no longer be able to participate and has retired!"
 	new_embed = discord.Embed(title = "ELIMINATED!",
 							  description = desc,
 							  color = 0x458dd6)

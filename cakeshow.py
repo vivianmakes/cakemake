@@ -25,7 +25,7 @@ class Gameshow():
         desc = "***" + p1.get_sound() + "*** " + p1.name + " " + p1.get_verb().lower() + " a " + p1.get_cake_adjective().lower() + " " + p1.get_cake_flavor().lower() + " " + p1.get_cake_type().lower() + "!!"
         if p1.get_unlucky():
             desc += ' ' + get_unlucky_text()
-            p1_quality = 1
+            p1_quality = 0
         if p1.get_lucky():
             desc += ' ' + get_lucky_text()
             p1_quality += 30
@@ -35,7 +35,7 @@ class Gameshow():
         desc += "\n\n***" + p2.get_sound() + "*** " + p2.name + " " + p2.get_verb().lower() + " a " + p2.get_cake_adjective().lower() + " " + p2.get_cake_flavor().lower() + " " + p2.get_cake_type().lower() + "!!"
         if p2.get_unlucky():
             desc += ' ' + get_unlucky_text()
-            p2_quality = 1
+            p2_quality = 0
         if p2.get_lucky():
             desc += ' ' + get_lucky_text()
             p2_quality += 30
@@ -125,34 +125,15 @@ async def start_random_show():
     await start_show(p1, p2)
 
 
-async def finish_show(show):
+async def finish_show(show=None):
     global shows
 
-    await show.finish_show()
-    shows.remove(show)
-    return show
-
-matches_until_elimination = 9
-
-
-async def handle_show_update():
-    global matches_until_elimination
-
-    if matches_until_elimination >= 0:
-        if len(shows) > 0:
-            for show in shows:
-                show.minutes_until_resolve += -1
-                if show.minutes_until_resolve == 0:
-                    await finish_show(show)
-        else:
-            await start_random_show()
-        matches_until_elimination += -1
-    else:
-        roster.eliminate_player()
-        matches_until_elimination = 9
-
-
-
-# --
-
-periodic.schedule_new_event(time=arrow.utcnow(), func=handle_show_update, loop_minutes=1)
+    if show is not None:
+        await show.finish_show()
+        shows.remove(show)
+        return show
+    elif len(shows) >= 0:
+        show = shows[0]
+        await show.finish_show()
+        shows.remove(show)
+        return show

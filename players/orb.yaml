@@ -1,0 +1,15 @@
+name: "ORB"
+icon: "orb.png"
+pronoun: 'they'
+unluck: 10
+luck: 0
+vibe: -2
+keywords:
+  sounds:
+    - "ORB!"
+  adjectives:
+    - "sinister"
+    - "oily"
+    - "black"
+    - "haunted"
+    - "spherical"
