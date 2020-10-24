@@ -89,5 +89,5 @@ async def send_elimination_message(eliminated_player):
 	desc += "\n" + prose.random("elimination.yaml").replace("[Name]", eliminated_player.name)
 	new_embed = discord.Embed(title = "ELIMINATED!",
 							  description = desc,
-							  color = 0x458dd6)
+							  color = 0xce2828)
 	await broadcast_embed(new_embed)
