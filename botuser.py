@@ -90,29 +90,3 @@ def compare_wins(in_player):
     except ZeroDivisionError:
         ratio = 1
     return ratio
-
-
-@botuser.command(name='inspect')
-async def inspect(ctx, *args):
-    search_string = " ".join(args[:])
-    result = roster.search_players(search_string) #returns a player or none
-    if result is None:
-        await messaging.send_error_message("Couldn't figure out who you meant. Try being more specific.")
-    else:
-        desc = ""
-        desc += "\n\n**Pronouns:** " + result.get_pronoun('they') + "/" + result.get_pronoun('them')
-        desc += "\n**Wins:** " + str(result.wins)
-        desc += "\n**Losses:** " + str(result.losses)
-        desc += "\n\n**Vibe:** " + result.get_vibe_emojis()
-        desc += "\n**Talent:** " + result.get_talent_description()
-        desc += "\n**Reliability:** " + result.get_reliability_description()
-        desc += "\n**Horoscope:** " + result.get_luck_description()
-        desc += "\n**Disposition:** " + result.get_disposition_description()
-
-        im = imaging.open_image_path(result.get_portrait_path())
-        file = imaging.get_image_file(im)
-        new_embed = discord.Embed(title = "INSPECTING " + result.name,
-                                  description = desc,
-                                  color = 0x458dd6)
-        new_embed.set_image(url='attachment://image.png')
-        await ctx.send(embed = new_embed, file=file)

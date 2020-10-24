@@ -65,8 +65,6 @@ class Periodic:
                         if len(roster.players) == 1:
                             self.events = []  # CLEAR the event queue!
                             await cakeshow.finish_bracket()
-                            await self.events[0].run()
-                            self.hold_event_queue_until = arrow.utcnow().shift(minutes=config.minutes_between_brackets)
                             await cakeshow.new_bracket()
 
                 else:

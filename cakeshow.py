@@ -32,8 +32,18 @@ class Gameshow():
         p1.on_show_end(self)
         p2.on_show_end(self)
 
+        if random.randrange(1, 100) <= 20:
+            interviewee = random.choice([p1, p2])
+            if not interviewee.has_interviewed:
+                periodic.schedule_new_event(func=lambda: interview(interviewee))
+                interviewee.has_interviewed = True
+
 
 shows = []
+
+async def interview(player):
+    await messaging.send_general_message("EXCLUSIVE INTERVIEW...", player.name + " agrees to an exclusive interview.\n" + prose.random('interview.yaml'))
+    await messaging.send_inspect_message(player)
 
 
 async def start_show(p1, p2):
@@ -80,7 +90,9 @@ async def finish_bracket():
         desc += "__***ASCEND***__."
         desc += "\n\n " + prose.random('finish_bracket.yaml')
         desc += "\n\n *The bracket is over. A new bracket will start soon.*"
-        periodic.schedule_new_event(func=lambda: messaging.send_general_message("LONG LIVE THE CHAMPION", desc))
+        roster.vacation_players(roster.players_eliminated)
+        roster.ascend_players([winner])
+        periodic.schedule_new_event(func=lambda: messaging.send_general_message("LONG LIVE THE CHAMPION", desc), duration=config.minutes_between_brackets)
 
 
 async def new_bracket():

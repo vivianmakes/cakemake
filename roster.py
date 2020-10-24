@@ -9,6 +9,7 @@ import messaging
 
 class Player:
     def __init__(self):
+        self.filename = ""
         self.name = "Default"
         self.talent = 0
         self.luck = 0
@@ -22,17 +23,18 @@ class Player:
         self.losses = 0
         self.vibe = 0
         self.reliability = 0
+        self.has_interviewed = False
 
         self.keywords = {}
         self.stats = {}
 
         self.in_shows = []
 
-
-    def build_from_yaml(self, in_yaml):
+    def build_from_yaml(self, in_yaml, filename=""):
 
         input = yaml.load(in_yaml, Loader=yaml.BaseLoader)
 
+        self.filename = filename
         self.name = input.get('name', "Default")
         self.talent = int(input.get('talent', random.randint(3, 8)))
         self.luck = int(input.get('luck', random.randint(0, 9)))
@@ -78,7 +80,7 @@ class Player:
             print("Couldn't remove player from show.")
 
     def add_cheer(self, user_object):
-        if user_object.id not in self.cheered_by:
+        if user_object.id not in self.cheered_by and len(self.in_shows) > 0:
             self.cheer += 1
             self.cheered_by.append(user_object.id)
             return True
@@ -245,8 +247,12 @@ class Player:
                 return 'them'
 
 # INIT ROSTER
+ascended = []
+vacationing = []
+
 players = []
 players_on_bench = []
+players_eliminated = []
 
 
 def get_random_pair():
@@ -304,8 +310,20 @@ async def eliminate_player():
 
     if eliminate is not None:
         players.remove(eliminate)
+        players_eliminated.append(eliminate)
         await messaging.send_elimination_message(eliminate)
 
+
+def vacation_players(player_list):
+    global vacationing
+    for player in player_list:
+        vacationing.append(player)
+
+
+def ascend_players(player_list):
+    global ascended
+    for player in player_list:
+        ascended.append(player_list)
 
 
 def bench_players(player_list):
@@ -325,6 +343,7 @@ def bench_players(player_list):
 def reset_bench():
     global players_on_bench
     players_on_bench = []
+
 
 def search_players(search_string):
     search_list = []
@@ -351,12 +370,19 @@ def search_players(search_string):
 
 def build_new_roster():
     global players
+    global vacationing
+    global ascended
+    global players_eliminated
+    global players_on_bench
 
     players = []  # empty players
+    players_eliminated = []
+    players_on_bench = []
     initial_roster_filenames = []
     potential_roster_filenames = []
     for filename in glob.glob('players/*.yaml'):
-        potential_roster_filenames.append(filename)
+        if filename not in vacationing and filename not in ascended:
+            potential_roster_filenames.append(filename)
 
     while len(initial_roster_filenames) < 6:
         choice = random.choice(potential_roster_filenames)
@@ -366,9 +392,10 @@ def build_new_roster():
     for filename in initial_roster_filenames:
         with open(os.path.join(os.getcwd(), filename), 'r') as f:  # open file in readonly
             newplayer = Player()
-            newplayer.build_from_yaml(f)
+            newplayer.build_from_yaml(f, filename=filename)
             players.append(newplayer)
 
+    vacationing = []
 
 
 

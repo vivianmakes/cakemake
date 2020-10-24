@@ -47,6 +47,25 @@ async def send_victory_message(result):
 	await broadcast_embed(new_embed, file=file)
 
 
+async def send_inspect_message(player):
+	desc = ""
+	desc += "\n\n**Pronouns:** " + player.get_pronoun('they') + "/" + player.get_pronoun('them')
+	desc += "\n**Wins:** " + str(player.wins)
+	desc += "\n**Losses:** " + str(player.losses)
+	desc += "\n**Talent:** " + player.get_talent_description()
+	desc += "\n**Reliability:** " + player.get_reliability_description()
+	desc += "\n**Horoscope:** " + player.get_luck_description()
+	desc += "\n**Disposition:** " + player.get_disposition_description()
+
+	im = imaging.open_image_path(player.get_portrait_path())
+	file = imaging.get_image_file(im)
+	new_embed = discord.Embed(title=player.name.upper(),
+							  description=desc,
+							  color=0x458dd6)
+	new_embed.set_image(url='attachment://image.png')
+	await broadcast_embed(new_embed)
+
+
 async def send_error_message(in_desc):
 	new_embed = discord.Embed(title = "ERROR!",
 							  description = in_desc,
