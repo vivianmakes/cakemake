@@ -9,7 +9,7 @@ from functools import partial
 
 
 class Gameshow():
-    def __init__(self, p1, p2, final=final):
+    def __init__(self, p1, p2, final=False):
         self.participant1 = p1
         self.participant2 = p2
         p1.on_added_to_show(self)
@@ -34,6 +34,14 @@ class Gameshow():
         p1.on_show_end(self)
         p2.on_show_end(self)
 
+    async def cheer(self, player_object, user_object):
+        res = False
+        if user_object.id not in self.cheered_by:
+            res = player_object.add_cheer(user_object)
+            if res:
+                self.cheered_by.append(user_object.id)
+        return res
+
 
 shows = []
 
@@ -56,13 +64,6 @@ async def start_show(p1, p2, final=False):
                 interviewee.has_interviewed = True
 
     return show
-
-async def cheer(player_object, user_object, empty=False):
-    res = False
-    if user_object.id not in self.cheered_by:
-      res = player_object.add_cheer(user_object)
-      self.cheered_by.append(user_object.id)
-    return res
 
 
 async def start_random_show():

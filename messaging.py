@@ -6,8 +6,9 @@ import prose
 async def broadcast_embed(embed, file=None):
 	if file is not None:
 		embed.set_image(url = 'attachment://image.png')
-
-	await botuser.botuser.broadcast_embed(embed, file = file)
+		await botuser.botuser.broadcast_embed(embed, file=file)
+	else:
+		await botuser.botuser.broadcast_embed(embed)
 
 
 async def send_versus_message(p1, p2, final=False):
@@ -22,12 +23,12 @@ async def send_versus_message(p1, p2, final=False):
 
 	res = imaging.get_vs_graphic(im1, im2)
 
-    desc = ""
-    if not final:
-        desc = "The following contestants will bake next. "
-    else:
-        desc = ":crown: It's the ***FINAL SHOWDOWN*** - The winner of this match takes it all. \n"
-    desc += "Use the `!cheer [part of name]` command to cheer for the contestant you want to win."
+	desc = ""
+	if not final:
+		desc = "The following contestants will bake next. "
+	else:
+		desc = ":crown: It's the ***FINAL SHOWDOWN*** - The winner of this match takes it all. \n"
+	desc += "Use the `!cheer [part of name]` command to cheer for the contestant you want to win."
 
 	new_embed = discord.Embed(title="UP NEXT...", description=desc, color=0xffd300)
 	new_embed.add_field(name=n1, value=d1, inline=True)

@@ -349,10 +349,10 @@ def search_players(search_string):
     search_list = []
 
     for player in players:
-        if len(search_string) < 4: 
-            search_list.append({'obj':player, 'score':fuzz.ratio(player.name.lower())})
+        if len(search_string) < 3:
+            search_list.append({'obj':player, 'score':fuzz.ratio(player.name.lower(), search_string.lower())})
         else:
-            search_list.append({'obj':player, 'score':fuzz.partial_ratio(player.name.lower())})
+            search_list.append({'obj':player, 'score':fuzz.partial_ratio(player.name.lower(), search_string.lower())})
 
     result = None
     high_score = 75 # base ratio it must meet.

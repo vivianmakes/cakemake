@@ -4,6 +4,7 @@ import imaging
 import roster
 import messaging
 from config import credentials, config
+import cakeshow
 
 class Botuser(commands.Bot):
     def __init__(self, *args, **kwargs):
@@ -49,11 +50,14 @@ async def cheer(ctx, *args):
     if player is None:
         desc = "Couldn't figure out who you meant. Try being more specific."
     else:
-        result = player.add_cheer(ctx.author)
-        if result:
-            desc = ":tada: You cheer on " + player.name + "!"
+        if len(cakeshow.shows) > 0:
+            result = await cakeshow.shows[0].cheer(player, ctx.author)
+            if result:
+                desc = ":tada: You cheer on " + player.name + "!"
+            else:
+                desc = "*You can only cheer contestants in the active show. You can only cheer in a show once.*"
         else:
-            desc = "*You can only cheer contestants in the active show. You can only cheer in a show once.*"
+            desc = "No show is currently running."
 
     await ctx.send(desc)
 
