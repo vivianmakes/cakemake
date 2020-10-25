@@ -14,7 +14,7 @@ class Config():
         self.persistent = False
         self.public_test = False
         self.interval = 0.2  # in minutes
-        self.minutes_between_brackets = 15
+        self.minutes_between_brackets = 0.5
 
 
 credentials = Credentials()
