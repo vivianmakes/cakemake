@@ -32,7 +32,7 @@ class Gameshow():
         p1.on_show_end(self)
         p2.on_show_end(self)
 
-        if random.randrange(1, 100) <= 20:
+        if random.randrange(1, 100) <= 38:
             interviewee = random.choice([p1, p2])
             if not interviewee.has_interviewed:
                 periodic.schedule_new_event(func=lambda: interview(interviewee))

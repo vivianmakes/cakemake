@@ -317,7 +317,7 @@ async def eliminate_player():
 def vacation_players(player_list):
     global vacationing
     for player in player_list:
-        vacationing.append(player)
+        vacationing.append(player.filename())
 
 
 def ascend_players(player_list):
