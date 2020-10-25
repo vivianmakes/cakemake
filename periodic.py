@@ -54,8 +54,14 @@ class Periodic:
             if self.hold_show_until < arrow.utcnow():
                 if len(cakeshow.shows) == 0:
                     if self.shows_since_last_elimination < get_matches_before_elimination():
-                        await cakeshow.start_random_show()
-                        self.hold_show_until = arrow.utcnow().shift(minutes=config.interval)
+                        if len(roster.players) > 2:
+                            await cakeshow.start_random_show()
+                        else:
+                            await cakeshow.start_final_show()
+                        delay = config.interval
+                        if len(roster.players) >= 5:
+                            delay = delay*0.5
+                        self.hold_show_until = arrow.utcnow().shift(minutes=delay)
                     else:
                         self.shows_since_last_elimination = 0
                         await roster.eliminate_player()
@@ -71,7 +77,7 @@ class Periodic:
                     await cakeshow.finish_show()
                     self.hold_show_until = arrow.utcnow().shift(minutes=min(config.interval, 2))
                     self.shows_since_last_elimination += 1
-                    if self.shows_since_last_elimination >= get_matches_before_elimination():
+                    if self.shows_since_last_elimination >= get_matches_before_elimination() and len(roster.players) > 2:
                         schedule_new_event(func=send_elimination_warning, duration=min(config.interval, 5))
 
 
@@ -80,7 +86,7 @@ def get_matches_before_elimination():
     if length >= 6:
         return 6
     if length >= 4:
-        return 3
+        return 2
     if length >= 3:
         return 2
     if length >= 2:

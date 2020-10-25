@@ -9,12 +9,14 @@ from functools import partial
 
 
 class Gameshow():
-    def __init__(self, p1, p2):
+    def __init__(self, p1, p2, final=final):
         self.participant1 = p1
         self.participant2 = p2
         p1.on_added_to_show(self)
         p2.on_added_to_show(self)
         self.minutes_until_resolve = config.interval
+        self.cheered_by = []
+        self.final=final
 
     def get_participant_list(self):
         return [self.participant1, self.participant2]
@@ -32,12 +34,6 @@ class Gameshow():
         p1.on_show_end(self)
         p2.on_show_end(self)
 
-        if random.randrange(1, 100) <= 38:
-            interviewee = random.choice([p1, p2])
-            if not interviewee.has_interviewed:
-                periodic.schedule_new_event(func=lambda: interview(interviewee))
-                interviewee.has_interviewed = True
-
 
 shows = []
 
@@ -46,17 +42,26 @@ async def interview(player):
     await messaging.send_inspect_message(player)
 
 
-async def start_show(p1, p2):
+async def start_show(p1, p2, final=False):
     global shows
 
-    show = Gameshow(p1, p2)
-    await messaging.send_versus_message(p1, p2)
+    show = Gameshow(p1, p2, final=final)
+    await messaging.send_versus_message(p1, p2, final=final)
     shows.append(show)
+
+    if random.randrange(1, 100) <= 38:
+            interviewee = random.choice([p1, p2])
+            if not interviewee.has_interviewed:
+                periodic.schedule_new_event(func=lambda: interview(interviewee))
+                interviewee.has_interviewed = True
+
     return show
 
-
-async def cheer(player_object, user_object):
-    res = player_object.add_cheer(user_object)
+async def cheer(player_object, user_object, empty=False):
+    res = False
+    if user_object.id not in self.cheered_by:
+      res = player_object.add_cheer(user_object)
+      self.cheered_by.append(user_object.id)
     return res
 
 
@@ -66,6 +71,14 @@ async def start_random_show():
     p2 = matchup[1]
     roster.bench_players([p1, p2])
     await start_show(p1, p2)
+
+
+async def start_final_show():
+    matchup = roster.get_matchup()
+    p1 = matchup[0]
+    p2 = matchup[1]
+    roster.bench_players([p1, p2])
+    await start_show(p1, p2, final=True)
 
 
 async def finish_show(show=None):

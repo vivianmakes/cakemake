@@ -53,7 +53,7 @@ async def cheer(ctx, *args):
         if result:
             desc = ":tada: You cheer on " + player.name + "!"
         else:
-            desc = "*Contestant is not in an active show.*"
+            desc = "*You can only cheer contestants in the active show. You can only cheer in a show once.*"
 
     await ctx.send(desc)
 

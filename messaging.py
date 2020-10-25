@@ -10,7 +10,7 @@ async def broadcast_embed(embed, file=None):
 	await botuser.botuser.broadcast_embed(embed, file = file)
 
 
-async def send_versus_message(p1, p2):
+async def send_versus_message(p1, p2, final=False):
 	im1 = p1.get_portrait_path()
 	im2 = p2.get_portrait_path()
 
@@ -22,7 +22,14 @@ async def send_versus_message(p1, p2):
 
 	res = imaging.get_vs_graphic(im1, im2)
 
-	new_embed = discord.Embed(title="UP NEXT...", description="The following contestants will bake next. Use the `!cheer [part of name]` command to cheer for the contestant you want to win.", color=0xffd300)
+    desc = ""
+    if not Final:
+        desc = "The following contestants will bake next. "
+    else:
+        desc = ":crown: It's the ***FINAL SHOWDOWN*** - The winner of this match takes it all. \n"
+    desc += "Use the `!cheer [part of name]` command to cheer for the contestant you want to win."
+
+	new_embed = discord.Embed(title="UP NEXT...", description=desc, color=0xffd300)
 	new_embed.add_field(name=n1, value=d1, inline=True)
 	new_embed.add_field(name=n2, value=d2, inline=True)
 	file = imaging.get_image_file(res)
