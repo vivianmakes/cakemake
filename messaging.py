@@ -23,7 +23,7 @@ async def send_versus_message(p1, p2, final=False):
 	res = imaging.get_vs_graphic(im1, im2)
 
     desc = ""
-    if not Final:
+    if not final:
         desc = "The following contestants will bake next. "
     else:
         desc = ":crown: It's the ***FINAL SHOWDOWN*** - The winner of this match takes it all. \n"
