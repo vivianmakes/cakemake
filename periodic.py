@@ -37,6 +37,7 @@ class Periodic:
         self.hold_event_queue_until = arrow.utcnow()
         self.hold_show_until = arrow.utcnow()
         self.shows_since_last_elimination = 0
+        self.brackets_remaining = config.brackets_before_shutdown-1
 
     def remove_event(self, event):
         self.events.remove(event)
@@ -71,7 +72,11 @@ class Periodic:
                         if len(roster.players) == 1:
                             self.events = []  # CLEAR the event queue!
                             await cakeshow.finish_bracket()
-                            await cakeshow.new_bracket()
+                            if self.brackets_remaining > 0:
+                                await cakeshow.new_bracket()
+                                self.brackets_remaining += -1
+                            else:
+                                await messaging.send_general_message("THAT'S ALL SHE WROTE.", "Thanks for coming! The final bracket has concluded.")
 
                 else:
                     await cakeshow.finish_show()

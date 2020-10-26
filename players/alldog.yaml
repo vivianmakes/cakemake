@@ -1,6 +1,7 @@
 name: "Alldog Heaven"
 icon: "alldog.png"
 pronoun: 'they'
+luck: 6
 keywords:
   sounds:
     - "WOOF!"

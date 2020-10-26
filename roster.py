@@ -399,7 +399,7 @@ def build_new_roster():
             newplayer.build_from_yaml(f, filename=filename)
             players.append(newplayer)
 
-    vacationing = []
+    # vacationing = []
 
 
 
