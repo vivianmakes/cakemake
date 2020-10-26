@@ -78,7 +78,7 @@ class Periodic:
                     self.hold_show_until = arrow.utcnow().shift(minutes=min(config.interval, 2))
                     self.shows_since_last_elimination += 1
                     if self.shows_since_last_elimination >= get_matches_before_elimination() and len(roster.players) > 2:
-                        schedule_new_event(func=send_elimination_warning, duration=min(config.interval, 5))
+                        schedule_new_event(func=send_elimination_warning, duration=min(config.interval, 1))
 
 
 def get_matches_before_elimination():
